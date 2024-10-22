@@ -230,7 +230,15 @@ class Telemetry_Channel
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json; charset=utf-8'
             );
-            $body = utf8_encode($serializedTelemetryItem);
+            $encoding = mb_detect_encoding($serializedTelemetryItem, 'ISO-8859-1, UTF-8', true);
+            // If it is not already UTF-8, convert it
+            if ($encoding !== 'UTF-8') {
+                $body = mb_convert_encoding($serializedTelemetryItem, 'UTF-8', $encoding);
+            }
+            else
+            {
+                $body = $serializedTelemetryItem;
+            }
         }
 
         if ($useGuzzle)
